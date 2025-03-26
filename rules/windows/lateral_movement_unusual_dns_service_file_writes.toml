@@ -47,7 +47,10 @@ type = "eql"
 query = '''
 file where host.os.type == "windows" and process.name : "dns.exe" and event.type in ("creation", "deletion", "change") and
   not file.name : "dns.log" and not
-  (file.extension : ("old", "temp", "bak", "dns", "arpa") and file.path : "C:\\Windows\\System32\\dns\\*") and
+  (file.extension : ("old", "temp", "bak", "dns", "arpa") and file.path : "C:\\Windows\\System32\\dns\\*") and not
+  
+   /* File paths for windows logs, change auditor, and normal DNS zone files.*/
+   file.path : ("C:\\DNSLogs\\DNSLogs.log", "C:\\Program Files\\Quest\\ChangeAuditor\\Agent\\Logs\\CaDnsSup.Log*.nptlog", "C:\\Windows\\System32\\dns\\dnszones\\*") and
 
   /* DNS logs with custom names, header converts to "DNS Server log" */
   not ?file.Ext.header_bytes : "444e5320536572766572206c6f67*"
